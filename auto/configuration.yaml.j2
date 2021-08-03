@@ -34,6 +34,6 @@ stream:
 camera:
   - platform: generic
     name: Front Door
-    still_image_url: https://10.0.0.245/snap.jpeg
-    stream_source: rtsp://172.16.66.1:7447/vWAqQzM3Hpja4sxk
+    still_image_url: !secret stream_img
+    stream_source: !secret stream_url
     verify_ssl: false

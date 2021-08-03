@@ -1,31 +1,25 @@
 ---
 - hosts: localhost
 - include_vars: "vault"
-- name: Find old DBs
-  find:
-    paths: /root/.homeassistant/.storage/
-    patterns: core.*
-  register: files_to_delete
-
-- name: Delete old DBs
-  file:
-    path: "{{ item.path }}"
-    state: absent
-  with_items: "{{ files_to_delete.files }}"
-
-- name: Template for configs
-  template:
-    src: "{{ item }}.j2"
-    dest: "/root/.homeassistant/{{ item }}"
-  with_items:
-    - configuration.yaml
-    - automations.yaml
-    - binary_sensor.yaml
-    - customize.yaml
-    - groups.yaml
-    - scenes.yaml
-    - scripts.yaml
-    - sensor.yaml
-    - switch.yaml
-    - secrets.yaml
+- tasks:
+  - name: Delete the .storage folder
+    file:
+      state: absent
+      path: /home/elajoie/halocal/.storage/
+      
+  - name: Template for configs
+    template:
+      src: "{{ item }}.j2"
+      dest: "/home/elajoie/halocal/{{ item }}"
+    with_items:
+      - configuration.yaml
+      - automations.yaml
+      - binary_sensor.yaml
+      - customize.yaml
+      - groups.yaml
+      - scenes.yaml
+      - scripts.yaml
+      - sensor.yaml
+      - switch.yaml
+      - secrets.yaml
 ...

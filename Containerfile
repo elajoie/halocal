@@ -1,21 +1,17 @@
 FROM registry.fedoraproject.org/fedora:latest
 
 # Install some packages
-RUN dnf install -y python python3-pip python-devel gcc ansible
+RUN dnf install -y python python3-pip python-devel gcc
 RUN pip install homeassistant
-COPY init.sh /init.sh
-
-
-RUN mkdir /root/.homeassistant/
-RUN wget (git repo) -O /root/.homeassistant/configuration.yaml
-RUN hass -c /root/.homeassistant
+RUN timeout 30s hass
+RUN ansible-playbook
 RUN dnf clean all
 
-
-RUN chmod 0755 /init.sh
-
-#expose port 8123/tcp
+#expose 8123/tcp for ha
 EXPOSE: 8123
+
+#expose 1887/tcp for mqtt
+EXPOSE: 1887
 
 # Create validation user
 RUN useradd -c "Home Assistant" -m -s /bin/sh -u 1000 ha

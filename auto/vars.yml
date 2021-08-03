@@ -1,0 +1,40 @@
+---
+# vars file for haConfig
+device:
+  - name: fishtanklight
+  - name: fishtankpower
+  - name: ericsfishfilter
+  - name: fishfeeder_92
+  - name: eric_fishtankpower
+  - name: hennilight
+  - name: greenlight
+  - name: kitchenwest
+  - name: kitchennorth
+  - name: eric_fishtanklights
+  - name: firstfloorhallsouth
+  - name: kitchen
+  - name: basementbathroom
+  - name: basementhall
+  - name: basementstairs
+  - name: bluelight
+  - name: firstfloorhallnorth
+  - name: livingroom
+  - name: whitelight
+  - name: firstfloorstorage
+  - name: firstfloorbathroom
+  - name: outsidenorth
+  - name: outsidesouth
+  - name: outsideeast
+  - name: outsidenwest
+  - name: outsideswest
+
+bsensor:
+  - name: outsidenorth
+  - name: outsidesouth
+  - name: outsideeast
+  - name: outsidenwest
+  - name: outsideswest
+
+doorsensor:
+  - name: frontdoorsensor
+  - name: backdoorsensor
