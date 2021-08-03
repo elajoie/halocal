@@ -1,0 +1,78 @@
+{% for f in fishTanks %}
+- id: '{{ 100 + loop.index }}'
+  alias: Turn on {{ f.name }} Fish Tank Lights
+  trigger:
+  - entity_id: sun.sun
+    from: below_horizon
+    platform: state
+    to: above_horizon
+  action:
+  - entity_id: switch.{{ f.lights }}
+    service: switch.turn_on
+  mode: single
+
+{% endfor %}
+{% for f in fishTanks %}
+- id: '{{ 200 + loop.index }}'
+  alias: Turn off {{ f.name }} Fish Tank Lights
+  trigger:
+  - entity_id: sun.sun
+    from: above_horizon
+    platform: state
+    to: below_horizon
+  action:
+  - entity_id: switch.{{ f.lights }}
+    service: switch.turn_off
+  mode: single
+
+{% endfor %}
+{% for f in fishTanks %}
+- id: '{{ 300 + loop.index }}'
+  alias: Feed {{ f.name }} Fish Tank
+  trigger:
+  - at: 09:00
+    platform: time
+  - at: '17:00'
+    platform: time
+  action:
+  - entity_id: switch.{{ f.filter }}
+    service: switch.turn_off
+  - entity_id: switch.{{ f.feeder }}
+    service: switch.turn_on
+  - delay: 00:00:02
+  - entity_id: switch.{{ f.feeder }}
+    service: switch.turn_off
+  - delay: 00:05:00
+  - entity_id: switch.{{ f.filter }}
+    service: switch.turn_on
+  mode: single
+
+{% endfor %}
+{% for m in motionLights %}
+- id: '{{ 400 + loop.index }}'
+  alias: Turn on outside light {{ m.name }}
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.{{ m.name }}
+  condition:
+  - condition: state
+    entity_id: sun.sun
+    state: below_horizon
+  - condition: not
+    conditions:
+    - condition: time
+      after: '22:00:00'
+      before: '06:00:00'
+  action:
+  - service: switch.turn_on
+    entity_id: switch.{{ m.name }}
+  - delay:
+      hours: 0
+      minutes: 1
+      seconds: 0
+      milliseconds: 0
+  - service: switch.turn_off
+    entity_id: switch.{{ m.name }}
+  mode: single
+
+{% endfor %}

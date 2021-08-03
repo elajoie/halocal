@@ -1,0 +1,33 @@
+{% for m in bsensor %}
+  - platform: mqtt
+    name: {{ m.name }}
+    state_topic: "stat/{{ m.name }}/MOTION"
+    payload_on: "1"
+    payload_off: "0"
+    availability_topic: tele/{{ m.name }}/LWT
+    payload_available: Online
+    payload_not_available: Offline
+    device_class: motion
+    force_update: true
+    off_delay: "30"
+    unique_id: {{ m.name }}_motion
+    device:
+      identifiers:
+        - {{ m.name }}
+
+{% endfor %}
+{% for d in doorsensor %}
+  - platform: mqtt
+    name: {{ d.name }}
+    state_topic: "stat/{{ d.name }}/OPEN"
+    payload_off: "OFF"
+    payload_on: "ON"
+    device_class: door
+    unique_id: {{ d.name }}_contact
+    device:
+      identifiers:
+        - {{ d.name }}
+      name: {{ d.name }}
+      manufacturer: Tasmota
+
+{% endfor %}

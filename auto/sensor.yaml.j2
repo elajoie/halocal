@@ -1,0 +1,53 @@
+{% for d in doorsensor %}
+  - platform: mqtt
+    name: "{{ d.name }}"
+    state_topic: "stat/{{ d.name }}/BATT"
+    icon: mdi:battery
+    unique_id: '{{ d.name }}_battery'
+    device:
+      identifiers:
+        - '{{ d.name }}'
+      name: "{{ d.name }}"
+      manufacturer: Tasmota
+
+{% endfor %}
+{% for t in temp %}
+  - platform: mqtt
+    name: "{{ t.name }} Temp"
+    state_topic: "tele/{{ t.name }}/SENSOR"
+    unit_of_measurement: '°C'
+    value_template: "{{ '{{' }} value_json.AM2301.Temperature {{ '}}' }}"
+
+{% endfor %}
+{% for h in humidity %}
+  - platform: mqtt
+    name: "{{ h.name }} Humidity"
+    state_topic: "tele/{{ h.name }}/SENSOR"
+    unit_of_measurement: '%'
+    value_template: "{{ '{{' }} value_json.AM2301.Humidity {{ '}}' }}"
+
+{% endfor %}
+{% for w in watts %}
+  - platform: mqtt
+    name: "{{ w.name }} Watts"
+    state_topic: "tele/{{ w.name }}/SENSOR"
+    value_template: '{{ '{{' }} value_json["ENERGY"]["Power"] {{ '}}' }}'
+    unit_of_measurement: "W"
+
+{% endfor %}
+{% for p in powerToday %}
+  - platform: mqtt
+    name: "{{ p.name }} Power Usage - TODAY"
+    state_topic: "tele/{{ p.name }}/SENSOR"
+    value_template: '{{ '{{' }} value_json["ENERGY"]["Today"] {{ '}}' }}'
+    unit_of_measurement: "kWh"
+
+{% endfor %}
+{% for p in powerYesterday %}
+  - platform: mqtt
+    name: "{{ p.name }} Power Usage - YESTERDAY"
+    state_topic: "tele/{{ p.name }}/SENSOR"
+    value_template: '{{ '{{' }} value_json["ENERGY"]["Yesterday"] {{ '}}' }}'
+    unit_of_measurement: "kWh"
+
+{% endfor %}
