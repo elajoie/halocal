@@ -5,7 +5,7 @@ RUN dnf install -y python python3-pip python-devel gcc
 RUN pip install homeassistant
 RUN timeout 30s hass
 RUN git clone git@github.com:elajoie/halocal.git
-RUN 
+RUN ansible-playbook --vault-password-file halocal/pass.yml halocal/main.yml
 RUN dnf clean all
 
 #expose 8123/tcp for ha

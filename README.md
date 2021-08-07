@@ -4,12 +4,12 @@ My goal is to create an automated configuration process where all my elements ar
 
 Pre Reqs:
 1. make sure you create your own vault file simular to below:
-     ```elevation: 123
-        latitude: 40.111111
-        longitude: 20.111111
-        mqttpassword: 123
-        stream_img: https://1.1.1.1/snap.jpeg
-        stream_url: rtsp://xyz
+```elevation: 123
+latitude: 40.111111
+longitude: 20.111111
+mqttpassword: 123
+stream_img: https://1.1.1.1/snap.jpeg
+stream_url: rtsp://xyz```
 
 2. Then create the vault password file (halocal/auto/pass.yml) in the halocal folder as the Containerfile will clone your repo and need this hidden file (.gitignore shows you what I did not sync into this repo)
         ```123```
