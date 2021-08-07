@@ -35,19 +35,3 @@
     unit_of_measurement: "W"
 
 {% endfor %}
-{% for p in powerToday %}
-  - platform: mqtt
-    name: "{{ p.name }} Power Usage - TODAY"
-    state_topic: "tele/{{ p.name }}/SENSOR"
-    value_template: '{{ '{{' }} value_json["ENERGY"]["Today"] {{ '}}' }}'
-    unit_of_measurement: "kWh"
-
-{% endfor %}
-{% for p in powerYesterday %}
-  - platform: mqtt
-    name: "{{ p.name }} Power Usage - YESTERDAY"
-    state_topic: "tele/{{ p.name }}/SENSOR"
-    value_template: '{{ '{{' }} value_json["ENERGY"]["Yesterday"] {{ '}}' }}'
-    unit_of_measurement: "kWh"
-
-{% endfor %}

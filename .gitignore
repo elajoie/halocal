@@ -3,3 +3,14 @@ home-assistant.log
 .HA_VERSION
 deps/
 .storage/
+pass.yml
+automations.yaml
+binary_sensor.yaml
+customize.yaml
+groups.yaml
+scenes.yaml
+scripts.yaml
+secrets.yaml
+sensor.yaml
+switch.yaml
+.Containerfile.swp

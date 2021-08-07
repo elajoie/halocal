@@ -3,14 +3,12 @@
 device:
   - name: fishtanklight
   - name: fishtankpower
-  - name: ericsfishfilter
-  - name: fishfeeder_92
-  - name: eric_fishtankpower
+  - name: fishtankfilter
+  - name: fishtankfeeder
   - name: hennilight
   - name: greenlight
   - name: kitchenwest
   - name: kitchennorth
-  - name: eric_fishtanklights
   - name: firstfloorhallsouth
   - name: kitchen
   - name: basementbathroom
@@ -35,6 +33,36 @@ bsensor:
   - name: outsidenwest
   - name: outsideswest
 
+motionLights:
+  - name: outsidenorth
+  - name: outsideeast
+  - name: outsidenwest
+
 doorsensor:
   - name: frontdoorsensor
   - name: backdoorsensor
+  - name: garagedoorsensor
+
+temp:
+  - name: outsidenorth
+  - name: outsidesouth
+  - name: outsideeast
+  - name: outsidenwest
+  - name: outsideswest
+
+humidity:
+  - name: outsidenorth
+  - name: outsidesouth
+  - name: outsideeast
+  - name: outsidenwest
+  - name: outsideswest
+
+watts:
+  - name: fishtanklight
+
+fishTanks:
+  - name: firstFloor
+    power: fishtankpower
+    filter: fishtankfilter
+    feeder: fishtankfeeder
+    lights: fishtanklight

@@ -1,25 +1,32 @@
 ---
-- hosts: localhost
-- include_vars: "vault"
-- tasks:
-  - name: Delete the .storage folder
-    file:
-      state: absent
-      path: /home/elajoie/halocal/.storage/
-      
-  - name: Template for configs
-    template:
-      src: "{{ item }}.j2"
-      dest: "/home/elajoie/halocal/{{ item }}"
-    with_items:
-      - configuration.yaml
-      - automations.yaml
-      - binary_sensor.yaml
-      - customize.yaml
-      - groups.yaml
-      - scenes.yaml
-      - scripts.yaml
-      - sensor.yaml
-      - switch.yaml
-      - secrets.yaml
+- hosts: 127.0.0.1
+  vars_files: 
+    - vault
+    - vars.yml
+  tasks:
+    - name: Delete the .storage folder
+      file:
+        state: absent
+        path: "{{ item }}"
+      with_items:
+        - /home/elajoie/halocal/.storage/
+        - /home/elajoie/halocal/home-assistant.log
+        - /home/elajoie/halocal/.HA_VERSION
+        - /home/elajoie/halocal/deps/
+        
+    - name: Template for configs
+      template:
+        src: "{{ item }}.j2"
+        dest: "/home/elajoie/halocal/{{ item }}"
+      with_items:
+        - configuration.yaml
+        - automations.yaml
+        - binary_sensor.yaml
+        - customize.yaml
+        - groups.yaml
+        - scenes.yaml
+        - scripts.yaml
+        - sensors.yaml
+        - switch.yaml
+        - secrets.yaml
 ...
