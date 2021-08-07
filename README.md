@@ -23,10 +23,12 @@ Once you have your own repo in git then edit the line (RUN git clone git@github.
 Now your Container file should build a HA system to your liking.
 
 Pleas note the host running the container should already allow the ports for HA and Mosquitto.
+```
 1. dnf -y install podman
 2. podman pull registry.fedoraproject.org/fedora:latest
 3. firewall-cmd --zone=FedoraServer --add-port=8123/tcp --permanent
 4. firewall-cmd --reload
+```
 
 Again, looking for feedback from your own experiance and ways to make this easier to have an offline HA which you as the user control the OS and image used to run HA.
 
