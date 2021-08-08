@@ -4,7 +4,7 @@ RUN --mount=type=secret,id=vault cat /run/secrets/vault
 # Install some packages
 RUN dnf install -y python python3-pip python-devel gcc ansible
 RUN pip install homeassistant
-RUN timeout 30s hass
+RUN timeout 30s hass; exit 0
 
 #create configs for HA
 RUN git clone git@github.com:elajoie/halocal.git
