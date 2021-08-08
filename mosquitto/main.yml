@@ -1,0 +1,8 @@
+---
+- hosts: 127.0.0.1
+  tasks:
+    - name: Template for mosquitto configs
+      template:
+        src: mosquitto.conf.j2
+        dest: "/etc/mosquitto/mosquitto.conf"
+...
