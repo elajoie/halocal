@@ -19,8 +19,4 @@
         - sensor.yaml
         - switch.yaml
         - secrets.yaml
-    - name: Template for mosquitto configs
-      template:
-        src: mosquitto.conf.j2
-        dest: "/etc/mosquitto/mosquitto.conf"
 ...
