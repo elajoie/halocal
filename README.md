@@ -29,6 +29,7 @@ stream_url: rtsp://xyz
 ```
 
 (put your ansible vault password into this file in git clone root folder)
+
 vi vault.txt
 
 Build images
