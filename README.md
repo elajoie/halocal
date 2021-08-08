@@ -34,10 +34,15 @@ vi vault.txt
 Build images
 
 (you can add the --no-cache option if you have to do edits on the git repo between builds)
+
 podman build --rm -t homeassistant --secret=id=vault,src=vault.txt -f hass/Containerfile
+
 podman build --rm -t mosquitto -f mosquitto/Containerfile
+
 podman pod create --name ha -p 8123:8123 -p 1883:1883 -p 8883:8883
+
 podman run -dt --pod ha localhost/mosquitto
+
 podman run -dt --pod ha localhost/homeassistant
 
 
