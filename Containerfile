@@ -1,7 +1,5 @@
 FROM registry.fedoraproject.org/fedora:latest
 
-RUN --mount=type=secret,id=vault cat /run/secrets/vault
-
 # Install some packages
 RUN dnf install -y python python3-pip python-devel gcc git ansible
 RUN pip install homeassistant
@@ -9,8 +7,8 @@ RUN timeout 30s hass; exit 0
 
 #create configs for HA
 RUN git clone https://github.com/elajoie/halocal.git
-RUN cat /run/secrets/vault
-RUN ansible-playbook --vault-password-file /run/secrets/vault halocal/main.yml
+RUN env
+RUN --mount=type=secret,id=vault ansible-playbook --vault-password-file /run/secrets/vault halocal/main.yml
 
 
 #Install MQTT Borker
