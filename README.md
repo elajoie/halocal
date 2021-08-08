@@ -1,23 +1,24 @@
 Install Fedora 34
 
-Install podman and git
+firewall-cmd --zone=FedoraServer --add-port=8123/tcp --permanent
+
+firewall-cmd --permanent --zone=FedoraServer --add-port=1883/tcp
+
+firewall-cmd --permanent --zone=FedoraServer --add-port=1883/udp
+
+firewall-cmd --permanent --zone=FedoraServer --add-port=8883/tcp
+
+firewall-cmd --permanent --zone=FedoraServer --add-port=8883/udp
+
+firewall-cmd --reload
+
+dnf install -y git podman
 
 git clone your repo
 
 cd halocal
 
-vi vault.txt
-
-(you can add the --no-cache option if you have to do edits on the git repo between builds)
-podman build --rm -t homeassistant --secret=id=vault,src=vault.txt -f hass/Containerfile
-podman build --rm -t mosquitto -f mosquitto/Containerfile
-podman pod create --name homeassistant
-podman run -dt -rm --pod -p 8123:8123 localhost/homeassistant
-podman run -dt -rm --pod -p 1883:1883 -p 8883:8883 localhost/mosquitto
-
-
-Pre Reqs:
-1. make sure you create your own vault file simular to below:
+make sure you create your own vault file simular to below and put it into the hass folder in your git repo:
 ```yaml
 elevation: 123
 latitude: 40.111111
@@ -27,17 +28,18 @@ stream_img: https://1.1.1.1/snap.jpeg
 stream_url: rtsp://xyz
 ```
 
-Pleas note the host running the container should already allow the ports for HA and Mosquitto.
-```
-1. dnf -y install podman
-2. podman pull registry.fedoraproject.org/fedora:latest
-3. firewall-cmd --zone=FedoraServer --add-port=8123/tcp --permanent
-4. firewall-cmd --permanent --zone=FedoraServer --add-port=1883/tcp
-5. firewall-cmd --permanent --zone=FedoraServer --add-port=1883/udp
-6. firewall-cmd --permanent --zone=FedoraServer --add-port=8883/tcp
-7. firewall-cmd --permanent --zone=FedoraServer --add-port=8883/udp
-8. firewall-cmd --reload
-```
+(put your ansible vault password into this file in git clone root folder)
+vi vault.txt
+
+Build images
+
+(you can add the --no-cache option if you have to do edits on the git repo between builds)
+podman build --rm -t homeassistant --secret=id=vault,src=vault.txt -f hass/Containerfile
+podman build --rm -t mosquitto -f mosquitto/Containerfile
+podman pod create --name ha -p 8123:8123 -p 1883:1883 -p 8883:8883
+podman run -dt --pod ha localhost/mosquitto
+podman run -dt --pod ha localhost/homeassistant
+
 
 Again, looking for feedback from your own experiance and ways to make this easier to have an offline HA which you as the user control the OS and image used to run HA.
 
