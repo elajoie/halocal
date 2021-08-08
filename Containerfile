@@ -12,6 +12,7 @@ RUN git clone https://github.com/elajoie/halocal.git
 RUN cat /run/secrets/vault
 RUN ansible-playbook --vault-password-file /run/secrets/vault halocal/main.yml
 
+
 #Install MQTT Borker
 #RUN dnf install -y mosquitto
 #RUN
