@@ -10,6 +10,7 @@ vi vault.txt
 
 podman secret create vault vault.txt
 
+podman build --rm -t homeassistant -f Containerfile
 
 Pre Reqs:
 1. make sure you create your own vault file simular to below:
