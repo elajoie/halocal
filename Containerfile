@@ -1,8 +1,8 @@
 FROM registry.fedoraproject.org/fedora:latest
 
-RUN --mount=type=secret,id=vault cat /run/secrets/vault
+RUN --mount=type=secret,id=vault
 # Install some packages
-RUN dnf install -y python python3-pip python-devel gcc ansible
+RUN dnf install -y python python3-pip python-devel gcc git ansible
 RUN pip install homeassistant
 RUN timeout 30s hass; exit 0
 
