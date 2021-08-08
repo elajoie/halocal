@@ -8,7 +8,7 @@ RUN pip install homeassistant
 RUN timeout 30s hass; exit 0
 
 #create configs for HA
-RUN git clone git@github.com:elajoie/halocal.git
+RUN git clone https://github.com/elajoie/halocal.git
 RUN ansible-playbook --vault-password-file /run/secrets/vault halocal/main.yml
 
 #Install MQTT Borker
