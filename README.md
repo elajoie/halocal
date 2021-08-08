@@ -1,6 +1,6 @@
 Install Fedora 34
 
-firewall-cmd --zone=FedoraServer --add-port=8123/tcp --permanent
+firewall-cmd --permanent--zone=FedoraServer --add-port=8123/tcp 
 
 firewall-cmd --permanent --zone=FedoraServer --add-port=1883/tcp
 
