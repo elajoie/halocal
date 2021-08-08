@@ -9,15 +9,15 @@
         state: absent
         path: "{{ item }}"
       with_items:
-        - /home/elajoie/halocal/.storage/
-        - /home/elajoie/halocal/home-assistant.log
-        - /home/elajoie/halocal/.HA_VERSION
-        - /home/elajoie/halocal/deps/
+        - /root/.homeassistant/.storage/
+        - /root/.homeassistant/home-assistant.log
+        - /root/.homeassistant/.HA_VERSION
+        - /root/.homeassistant/deps/
         
     - name: Template for configs
       template:
         src: "{{ item }}.j2"
-        dest: "/home/elajoie/halocal/{{ item }}"
+        dest: "/root/.homeassistant/{{ item }}"
       with_items:
         - configuration.yaml
         - automations.yaml
