@@ -4,16 +4,6 @@
     - vault
     - vars.yml
   tasks:
-    - name: Delete the .storage folder
-      file:
-        state: absent
-        path: "{{ item }}"
-      with_items:
-        - /root/.homeassistant/.storage/
-        - /root/.homeassistant/home-assistant.log
-        - /root/.homeassistant/.HA_VERSION
-        - /root/.homeassistant/deps/
-        
     - name: Template for configs
       template:
         src: "{{ item }}.j2"
