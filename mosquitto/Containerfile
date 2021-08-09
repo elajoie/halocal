@@ -8,7 +8,7 @@ RUN git clone https://github.com/elajoie/halocal.git
 RUN ansible-playbook halocal/mosquitto/main.yml
 
 #expose 1883&8883/tcp&udp for mqtt
-EXPOSE 1883 8883
+EXPOSE 1883
 
-WORKDIR /root/
-CMD ["mosquitto"]
+WORKDIR /
+CMD ["mosquitto","-c /etc/mosquitto/mosquitto.conf"]
