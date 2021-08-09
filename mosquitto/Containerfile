@@ -11,4 +11,4 @@ RUN ansible-playbook halocal/mosquitto/main.yml
 EXPOSE 1883
 
 WORKDIR /
-CMD ["mosquitto","-c /etc/mosquitto/mosquitto.conf"]
+CMD ["mosquitto","-c","/etc/mosquitto/mosquitto.conf"]
