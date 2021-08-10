@@ -1,7 +1,7 @@
 FROM registry.fedoraproject.org/fedora:latest
 
 # Install some packages
-RUN dnf install -y python python3-pip python-devel gcc git ansible && pip install homeassistant
+RUN dnf install -y python python3-pip python-devel gcc && pip install homeassistant
 
 #run hass once ignoring errors so the deps folder is populated
 RUN timeout 30s hass; exit 0

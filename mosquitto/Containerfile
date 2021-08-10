@@ -1,7 +1,7 @@
 FROM registry.fedoraproject.org/fedora:latest
 
 # Install some packages
-RUN dnf install -y git ansible mosquitto
+RUN dnf install -y mosquitto
 
 #expose 1883&8883/tcp&udp for mqtt
 EXPOSE 1883
