@@ -9,6 +9,11 @@
         path: /root/.homeassistant
         state: directory
         mode: '0755'
+    - name: Create a directory if it does not exist
+      ansible.builtin.file:
+        path: /etc/mosquitto
+        state: directory
+        mode: '0755'
     - name: Template for hass configs
       template:
         src: "{{ item }}.j2"
