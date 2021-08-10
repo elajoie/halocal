@@ -1,4 +1,4 @@
-Install Fedora 34
+h1. Install Fedora 34
 
 firewall-cmd --permanent--zone=FedoraServer --add-port=8123/tcp 
 
@@ -24,27 +24,27 @@ stream_img: https://1.1.1.1/snap.jpeg
 stream_url: rtsp://xyz
 ```
 
-vi vault.txt
-(put your vault password here)
+ansible-playbook --ask-vault-pass main.yml 
 
+h1. Build images
 
-
-
-
-Build images
-
-(you can add the --no-cache option if you have to do edits on the git repo between builds)
-
-podman build --rm -t homeassistant --secret=id=vault,src=vault.txt -f hass/Containerfile
+podman build --rm -t homeassistant -f hass/Containerfile
 
 podman build --rm -t mosquitto -f mosquitto/Containerfile
 
 podman pod create --name ha -p 8123:8123 -p 1883:1883 -p 8883:8883
 
-podman run -dt --pod ha localhost/mosquitto
+podman run -dt --rm -p 1883:1883 --name mosquitto -v /etc/mosquitto:/etc/mosquitto:Z localhost/mosquitto 
 
-podman run -dt --pod ha localhost/homeassistant
+podman run -dt --rm -p 8123:8123 --name homeassistant -v /root/.homeassistant:/root/.homeassistant:Z localhost/homeassistant
 
+podman generate systemd --new --name mosquitto > /etc/systemd/system/mosquitto.service
+
+podman generate systemd --new --name homeassistant > /etc/systemd/system/homeassistant.service
+
+systemctl enable --now mosquitto.service
+
+systemctl enable --now homeassistant.service
 
 Again, looking for feedback from your own experiance and ways to make this easier to have an offline HA which you as the user control the OS and image used to run HA.
 
