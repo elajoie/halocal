@@ -3,10 +3,6 @@ FROM registry.fedoraproject.org/fedora:latest
 # Install some packages
 RUN dnf install -y git ansible mosquitto
 
-#create configs for HA
-RUN git clone https://github.com/elajoie/halocal.git
-RUN ansible-playbook halocal/mosquitto/main.yml
-
 #expose 1883&8883/tcp&udp for mqtt
 EXPOSE 1883
 

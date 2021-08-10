@@ -6,17 +6,13 @@ firewall-cmd --permanent --zone=FedoraServer --add-port=1883/tcp
 
 firewall-cmd --permanent --zone=FedoraServer --add-port=1883/udp
 
-firewall-cmd --permanent --zone=FedoraServer --add-port=8883/tcp
-
-firewall-cmd --permanent --zone=FedoraServer --add-port=8883/udp
-
 firewall-cmd --reload
 
 dnf install -y git podman
 
-git clone your repo
+git clone https://github.com/elajoie/halocal.git
 
-cd halocal
+cd halocal/configs
 
 make sure you create your own vault file simular to below and put it into the hass folder in your git repo:
 ```yaml
@@ -28,9 +24,12 @@ stream_img: https://1.1.1.1/snap.jpeg
 stream_url: rtsp://xyz
 ```
 
-(put your ansible vault password into this file in git clone root folder)
-
 vi vault.txt
+(put your vault password here)
+
+
+
+
 
 Build images
 
