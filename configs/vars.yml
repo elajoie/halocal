@@ -5,17 +5,18 @@ device:
   - name: fishtankpower
   - name: fishtankfilter
   - name: fishtankfeeder
-  - name: hennilight
+  - name: henniofficelight
   - name: greenlight
   - name: kitchenwest
   - name: kitchennorth
   - name: firstfloorhallsouth
+  - name: firstfloorhallnorth
   - name: kitchen
   - name: basementbathroom
   - name: basementhall
   - name: basementstairs
   - name: bluelight
-  - name: firstfloorhallnorth
+  - name: shedlights
   - name: livingroom
   - name: whitelight
   - name: firstfloorstorage
@@ -25,6 +26,8 @@ device:
   - name: outsideeast
   - name: outsidenwest
   - name: outsideswest
+  - name: fire_ericsoffice
+  - name: serverrackmodem
 
 bsensor:
   - name: outsidenorth
