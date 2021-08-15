@@ -32,11 +32,9 @@ podman build --rm -t homeassistant -f hass/Containerfile
 
 podman build --rm -t mosquitto -f mosquitto/Containerfile
 
-podman pod create --name ha -p 8123:8123 -p 1883:1883 -p 8883:8883
+podman run -dt --rm -p 1883:1883 --name mosquitto -v /etc/mosquitto:/etc/mosquitto:Z localhost/mosquitto:latest
 
-podman run -dt --rm -p 1883:1883 --name mosquitto -v /etc/mosquitto:/etc/mosquitto:Z localhost/mosquitto 
-
-podman run -dt --rm -p 8123:8123 --name homeassistant -v /root/.homeassistant:/root/.homeassistant:Z localhost/homeassistant
+podman run -dt --rm -p 8123:8123 --name homeassistant -v /root/.homeassistant:/root/.homeassistant:Z localhost/homeassistant:latest
 
 podman generate systemd --new --name mosquitto > /etc/systemd/system/mosquitto.service
 
