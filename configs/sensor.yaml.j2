@@ -35,9 +35,23 @@
     unit_of_measurement: "W"
 
 {% endfor %}
-#
-#  - platform: ics
-#      name: Packaging
-#      url: file:///root/.homeassistant/custom_components/ics/allestrassendietmannsried2021.ics
-#      id: 1
-#      icon: "mdi:recycle"
+  - platform: ics
+    name: Bio
+    url: file:///root/.homeassistant/allestrassendietmannsried2021.ics
+    id: 1
+    contains: "Biotonne"
+    icon: "mdi:bio"
+
+  - platform: ics
+    name: Paper
+    url: file:///root/.homeassistant/allestrassendietmannsried2021.ics
+    id: 2
+    contains: "Papiertonne"
+    icon: "mdi:recycle"
+
+  - platform: ics
+    name: Trash
+    url: file:///root/.homeassistant/allestrassendietmannsried2021.ics
+    id: 3
+    contains: "Restm"
+    icon: "mdi:trash-can"
