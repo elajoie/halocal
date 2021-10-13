@@ -34,6 +34,7 @@
     value_template: '{{ '{{' }} value_json["ENERGY"]["Power"] {{ '}}' }}'
     unit_of_measurement: "W"
 
+{% endfor %}
 {% for m in meters %}
   - platform: mqtt
     name: "{{ m.name }} Energy Total"
