@@ -28,6 +28,11 @@ device:
   - name: outsideswest
   - name: fire_ericsoffice
   - name: serverrackmodem
+  - name: gh_growlight
+  - name: gh_led
+
+multiswitchdevice:
+  - name: heater1
 
 bsensor:
   - name: outsidenorth
@@ -52,6 +57,7 @@ temp:
   - name: outsideeast
   - name: outsidenwest
   - name: outsideswest
+  - name: gh_led
 
 humidity:
   - name: outsidenorth
@@ -59,9 +65,11 @@ humidity:
   - name: outsideeast
   - name: outsidenwest
   - name: outsideswest
+  - name: gh_led
 
 watts:
   - name: fishtanklight
+  - name: gh_growlight
 
 fishTanks:
   - name: firstFloor

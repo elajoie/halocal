@@ -16,3 +16,21 @@
         - "{{ m.name }}"
 
 {% endfor %}
+{% for m in multiswitchdevice %}
+  - platform: mqtt
+    name: "{{ m.name }}"
+    command_topic: "cmnd/{{ m.name }}/power1"
+    state_topic: "stat/{{ m.name }}/POWER1"
+    payload_on: "ON"
+    payload_off: "OFF"
+    availability_topic: "tele/{{ m.name }}/LWT"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    qos: 1
+    retain: true
+    unique_id: "{{ m.name }}_device"
+    device:
+      identifiers:
+        - "{{ m.name }}"
+
+{% endfor %}
