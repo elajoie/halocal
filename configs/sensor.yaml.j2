@@ -40,7 +40,7 @@
     name: "{{ m.name }} Energy Total"
     state_topic: "tele/{{ m.name }}/SENSOR"
     value_template: '{{ '{{' }} value_json["{{ m.name }}"]["1_8_0"] {{ '}}' }}'
-    unit_of_measurement: "Wh"
+    unit_of_measurement: "kWh"
     device_class: energy
     state_class: total_increasing
 
@@ -50,7 +50,7 @@
     name: "{{ m.name }} Energy Total T1"
     state_topic: "tele/{{ m.name }}/SENSOR"
     value_template: '{{ '{{' }} value_json["{{ m.name }}"]["1_8_1"] {{ '}}' }}'
-    unit_of_measurement: "Wh"
+    unit_of_measurement: "kWh"
     device_class: energy
     state_class: total_increasing
 
@@ -60,7 +60,7 @@
     name: "{{ m.name }} Energy Total T2"
     state_topic: "tele/{{ m.name }}/SENSOR"
     value_template: '{{ '{{' }} value_json["{{ m.name }}"]["1_8_2"] {{ '}}' }}'
-    unit_of_measurement: "Wh"
+    unit_of_measurement: "kWh"
     device_class: energy
     state_class: total_increasing
 
@@ -70,7 +70,7 @@
     name: "{{ m.name }} Energy Export"
     state_topic: "tele/{{ m.name }}/SENSOR"
     value_template: '{{ '{{' }} value_json["{{ m.name }}"]["2_8_0"] {{ '}}' }}'
-    unit_of_measurement: "Wh"
+    unit_of_measurement: "kWh"
     device_class: energy
     state_class: total_increasing
 
