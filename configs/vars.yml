@@ -77,3 +77,7 @@ fishTanks:
     filter: fishtankfilter
     feeder: fishtankfeeder
     lights: fishtanklight
+
+meters:
+  - name: meterr
+  - name: meterl
