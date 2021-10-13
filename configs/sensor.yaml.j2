@@ -146,6 +146,26 @@
 
 {% endfor %}
 
+  - platform: template
+    sensors:
+      energy_heating_total:
+        value_template: "{{ states('sensor.meterr_energy_total') | float - states('sensor.meterl_energy_total') | float }}"
+
+  - platform: template
+    sensors:
+      energy_heating_total_t1:
+        value_template: "{{ states('sensor.meterr_energy_total_t1') | float - states('sensor.meterl_energy_total_t1') | float }}"
+
+  - platform: template
+    sensors:
+      energy_heating_total_t2:
+        value_template: "{{ states('sensor.meterr_energy_total_t2') | float - states('sensor.meterl_energy_total_t2') | float }}"
+
+  - platform: template
+    sensors:
+      energy_heating_total_solar:
+        value_template: "{{ states('sensor.meter1_energy_export') | float - states('sensor.meterr_energy_export') | float }}"
+
   - platform: ics
     name: Bio
     url: file:///root/.homeassistant/allestrassendietmannsried2021.ics
