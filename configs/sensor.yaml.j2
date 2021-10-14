@@ -135,17 +135,17 @@
   - platform: template
     sensors:
       power_heating_total:
-        value_template: "{{ '{{' }} states('sensor.meterr_power_total') | float - states('sensor.meterl_power_total') | float {{ '}}' }}"
+        value_template: "{{ '{{' }} states('sensor.meterr_power_total')|int - states('sensor.meterl_power_total')|int {{ '}}' }}"
 
   - platform: template
     sensors:
       energy_heating_total:
-        value_template: "{{ '{{' }} states('sensor.meterr_energy_total') | float - states('sensor.meterl_energy_total') | float {{ '}}' }}"
+        value_template: "{{ '{{' }} states('sensor.meterr_energy_total') | int - states('sensor.meterl_energy_total') | int {{ '}}' }}"
 
   - platform: template
     sensors:
       energy_heating_total_solar:
-        value_template: "{{ '{{' }} states('sensor.meter1_energy_export') | float - states('sensor.meterr_energy_export') | float {{ '}}' }}"
+        value_template: "{{ '{{' }} states('sensor.meter1_energy_export') | int - states('sensor.meterr_energy_export') | int {{ '}}' }}"
 
   - platform: ics
     name: Bio
