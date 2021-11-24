@@ -8,7 +8,9 @@ firewall-cmd --permanent --zone=FedoraServer --add-port=1883/udp
 
 firewall-cmd --reload
 
-dnf install -y git podman
+dnf install -y git podman ansible
+
+dnf groupinstall 'Development Tools'
 
 git clone https://github.com/elajoie/halocal.git
 
