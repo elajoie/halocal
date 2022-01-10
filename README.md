@@ -1,6 +1,7 @@
-h1. Install Fedora 34
+# Install Fedora 34
 
-firewall-cmd --permanent--zone=FedoraServer --add-port=8123/tcp 
+```
+firewall-cmd --permanent --zone=FedoraServer --add-port=8123/tcp 
 
 firewall-cmd --permanent --zone=FedoraServer --add-port=1883/tcp
 
@@ -15,6 +16,7 @@ dnf groupinstall 'Development Tools'
 git clone https://github.com/elajoie/halocal.git
 
 cd halocal/configs
+```
 
 make sure you create your own vault file simular to below and put it into the hass folder in your git repo:
 ```yaml
@@ -26,10 +28,13 @@ stream_img: https://1.1.1.1/snap.jpeg
 stream_url: rtsp://xyz
 ```
 
+```
 ansible-playbook --ask-vault-pass main.yml 
+```
 
-h1. Build images
+# Build images
 
+```
 podman build --rm -t homeassistant -f hass/Containerfile
 
 podman build --rm -t mosquitto -f mosquitto/Containerfile
@@ -45,6 +50,7 @@ podman generate systemd --new --name homeassistant > /etc/systemd/system/homeass
 systemctl enable --now mosquitto.service
 
 systemctl enable --now homeassistant.service
+```
 
 Again, looking for feedback from your own experiance and ways to make this easier to have an offline HA which you as the user control the OS and image used to run HA.
 
