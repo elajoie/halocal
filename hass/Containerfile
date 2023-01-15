@@ -1,8 +1,8 @@
-FROM registry.fedoraproject.org/fedora:latest
+FROM registry.fedoraproject.org/fedora:36
 
 # Install some packages
-COPY requirements.txt .
-RUN dnf install -y python python3-pip python-devel gcc && pip install -r requirements.txt homeassistant
+RUN dnf install -y python python3-pip python-devel gcc && dnf -y update && \
+    python3 -m pip install wheel && pip install homeassistant
 
 #run hass once ignoring errors so the deps folder is populated
 RUN timeout 30s hass; exit 0
