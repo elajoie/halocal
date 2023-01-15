@@ -20,25 +20,7 @@ homeassistant:
   unit_system: metric
   time_zone: Europe/Berlin
 
-mqtt:
-  broker: 10.0.0.2
-  username: client
-  password: !secret mqttpassword
-  discovery: false
-
 switch: !include switch.yaml
 sensor: !include sensor.yaml
 binary_sensor: !include binary_sensor.yaml
 automation: !include automations.yaml
-stream:
-camera:
-  - platform: generic
-    name: "Front Door"
-    still_image_url: !secret stream_img
-    stream_source: !secret stream_url
-    verify_ssl: false
-  - platform: generic
-    name: "Back Door"
-    still_image_url: !secret stream_img2
-    stream_source: !secret stream_url2
-    verify_ssl: false
