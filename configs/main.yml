@@ -15,7 +15,7 @@
         state: directory
         mode: '0755'
     - name: Template for hass configs
-      template:
+      ansible.builtin.template:
         src: "{{ item }}.j2"
         dest: "/root/.homeassistant/{{ item }}"
       with_items:
@@ -30,7 +30,7 @@
         - switch.yaml
         - secrets.yaml
     - name: Template for mosquitto configs
-      template:
+      tansible.builtin.template:
         src: mosquitto.conf.j2
         dest: "/etc/mosquitto/mosquitto.conf"
 ...
