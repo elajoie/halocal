@@ -20,7 +20,7 @@
 #      become: true
 
     - name: Start and create systemd for both HA and Mosquitto
-      ansible.builtin.command:
+      ansible.builtin.shell:
         cmd: "/usr/bin/podman rm --all --force"
       become: true
 
@@ -50,37 +50,31 @@
         path: "{{ homedir }}/halocal/mosquitto"
       become: true
 
-    - name: Start and create systemd for both HA and Mosquitto
-      ansible.builtin.command:
-        cmd: "/usr/bin/podman run -dt --rm -p 1883:1883 --name mosquitto -v {{ homedir }}/.mosquitto:/etc/mosquitto:Z localhost/mosquitto:latest"
+    - name: Start Mosquitto
+      ansible.builtin.shell: "/usr/bin/podman run -dt --rm -p 1883:1883 --name mosquitto -v {{ homedir }}/.mosquitto:/etc/mosquitto:Z localhost/mosquitto:latest"
       become: true
 
-    - name: Start and create systemd for both HA and Mosquitto
-      ansible.builtin.command:
-        cmd: "/usr/bin/podman run -dt --rm -p 8123:8123 --name homeassistant -v {{ homedir }}/.homeassistant:/root/.homeassistant:Z localhost/homeassistant:latest"
+    - name: Start HA
+      ansible.builtin.shell: "/usr/bin/podman run -dt --rm -p 8123:8123 --name homeassistant -v {{ homedir }}/.homeassistant:/root/.homeassistant:Z localhost/homeassistant:latest"
       become: true
 
-    - name: Start and create systemd for both HA and Mosquitto
-      ansible.builtin.command:
-        cmd: "/usr/bin/podman generate systemd --new --name mosquitto > /etc/systemd/system/mosquitto.service"
+    - name: create systemd for Mosquitto
+      ansible.builtin.shell: /usr/bin/podman generate systemd --new --name mosquitto > /etc/systemd/system/mosquitto.service
       become: true
 
-    - name: Start and create systemd for both HA and Mosquitto
-      ansible.builtin.command:
-        cmd: "/usr/bin/podman generate systemd --new --name homeassistant > /etc/systemd/system/homeassistant.service"
+    - name: Screate systemd for both HA
+      ansible.builtin.shell: /usr/bin/podman generate systemd --new --name homeassistant > /etc/systemd/system/homeassistant.service
       become: true
 
-    - name: Start and create systemd for both HA and Mosquitto
-      ansible.builtin.command:
-        cmd: "/usr/bin/systemctl enable --now mosquitto.service"
+    - name: Start systemd for Mosquitto
+      ansible.builtin.shell: /usr/bin/systemctl enable --now mosquitto.service
       become: true
       notify:
         - "restart ha"
         - "restart mosquitto"
 
-    - name: Start and create systemd for both HA and Mosquitto
-      ansible.builtin.command:
-        cmd: "/usr/bin/systemctl enable --now homeassistant.service"
+    - name: Start systemd for both HA
+      ansible.builtin.shell: /usr/bin/systemctl enable --now homeassistant.service
       become: true
       notify:
         - "restart ha"
