@@ -8,9 +8,10 @@
   tasks:
     - name: Firewall HA Rules
       ansible.posix.firewalld:
-        port: "{item}"                                                                                                                
+        port: "{{ item }}"                                                                                                                
         permanent: true                                                                                                               
         state: enabled
+        immediate: yes
       with_items:
         - "8123/tcp"
         - "1883/tcp"
