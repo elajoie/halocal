@@ -1,6 +1,7 @@
 ---
 # vars file for haConfig
 ansible_user: admin
+homedir: /home/admin
 
 device:
   - name: fishtanklight

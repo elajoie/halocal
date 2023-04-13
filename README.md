@@ -11,6 +11,11 @@ cd halocal/configs
 
 update host IP in inventory as 127.0.0.1 is the EE and the IP you put in will be what the EE SSHes into.
 
+add local file called pass with the password for sudo in it
+
+ansible-navigator run -m stdout main.yml --become-pass-file pass
+
+
 
 ```
 
@@ -25,7 +30,7 @@ stream_url: rtsp://xyz
 ```
 
 ```
-ansible-playbook --ask-vault-pass main.yml 
+
 ```
 
 # Build images

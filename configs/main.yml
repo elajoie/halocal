@@ -8,8 +8,8 @@
   tasks:
     - name: Firewall HA Rules
       ansible.posix.firewalld:
-        port: "{{ item }}"                                                                                                                
-        permanent: true                                                                                                               
+        port: "{{ item }}"
+        permanent: true
         state: enabled
         immediate: yes
       with_items:
@@ -17,13 +17,28 @@
         - "1883/tcp"
         - "1883/udp"
       notify: "reload firewall"
+      become: true
 
-#    - name: Download fedora image
-#      containers.podman.podman_image:
-#        name: registry.fedoraproject.org/fedora:latest
-#        tag: homeassistant
-#        path: /tmp/halocal/hass
+
+
+#podman run -dt --rm -p 1883:1883 --name mosquitto -v /etc/mosquitto:/etc/mosquitto:Z localhost/mosquitto:latest
+#podman run -dt --rm -p 8123:8123 --name homeassistant -v /home/admin/.homeassistant:/root/.homeassistant:Z localhost/homeassistant:latest
+#podman generate systemd --new --name mosquitto > /etc/systemd/system/mosquitto.service
+#podman generate systemd --new --name homeassistant > /etc/systemd/system/homeassistant.service
+#systemctl enable --now mosquitto.service
+#systemctl enable --now homeassistant.service
+
+    - name: Build HA image
+      containers.podman.podman_image:
+        name: registry.fedoraproject.org/fedora:latest
+        tag: homeassistant
+        path: "{{ homedir }}/halocal/hass"
     
+    - name: Build MQTT image
+      containers.podman.podman_image:
+        name: registry.fedoraproject.org/fedora:latest
+        tag: mosquitto
+        path: "{{ homedir }}/halocal/mosquitto"
       
 #    - name: Create a directory if it does not exist
 #      ansible.builtin.file:
@@ -61,4 +76,5 @@
         name: firewalld
         state: reloaded
       listen: "reload firewall"
+      become: true
 ...
