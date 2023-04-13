@@ -45,6 +45,30 @@
 #        path: "{{ homedir }}/halocal/mosquitto"
 #      become: true
 
+    - name: Run HA container
+      containers.podman.podman_container:
+        name: ha
+        image: localhost/homeassistant
+        state: started
+        volume: "{{ homedir }}/.homeassistant/:/root/.homeassistant/:Z"
+
+    - name: Wait for 60 sec so ha can load dependancies
+      wait_for:
+        delay: 60
+        timeout: 0
+
+    - name: Run HA container
+      containers.podman.podman_container:
+        name: ha
+        image: localhost/homeassistant
+        state: started
+
+    - name: Stop HA container
+      containers.podman.podman_container:
+        name: ha
+        image: localhost/homeassistant
+        state: absent
+
     - name: Start and create systemd service for Home Assistant
       containers.podman.podman_container:
         name: homeassistant
@@ -53,8 +77,7 @@
         recreate: yes
         expose:
           - 8123
-        volumes:
-          - "{{ homedir }}/.homeassistant/:/root/.homeassistant/"
+        volume: "{{ homedir }}/.homeassistant/:/root/.homeassistant/:Z"
         generate_systemd:
           path: /etc/systemd/system/
           restart_policy: always
@@ -72,8 +95,7 @@
 #        recreate: yes
 #        expose:
 #          - 1883
-#        volumes:
-#          - "{{ homedir }}/.mosquitto:/etc/mosquitto"
+#        volume: "{{ homedir }}/.mosquitto:/etc/mosquitto"
 #        generate_systemd:
 #          path: /etc/systemd/system/
 #          restart_policy: always
@@ -105,11 +127,24 @@
 #        dest: "{{ homedir }}/.mosquitto/mosquitto.conf"
 
   handlers:
+    - name: Just force systemd to reread configs (2.4 and above)
+      ansible.builtin.systemd:
+        daemon_reload: true
+      listen: "restart ha"
+      become: true
+
     - name: Restart ha service
       ansible.builtin.service:
         name: automation-homeassistant.service
-        state: reloaded
+        state: started
       listen: "restart ha"
+      become: true
+
+    - name: Just force systemd to reread configs (2.4 and above)
+      ansible.builtin.systemd:
+        daemon_reload: true
+      listen: "restart ha"
+      listen: "restart mosquitto"
       become: true
 
     - name: Restart mosquitto service
