@@ -21,19 +21,24 @@
 
     - name: Enable service httpd and ensure it is not masked
       ansible.builtin.systemd:
-        name: dmosquitto.service
-        enabled: true
+        name: mosquitto.service
+        enabled: false
       become: true
 
     - name: Enable service httpd and ensure it is not masked
       ansible.builtin.systemd:
         name: homeassistant.service
-        enabled: true
+        enabled: false
+      become: true
+
+   - name: Start and create systemd for both HA and Mosquitto
+      ansible.builtin.shell:
+        cmd: "systemctl daemon-reload"
       become: true
 
     - name: Start and create systemd for both HA and Mosquitto
       ansible.builtin.shell:
-        cmd: "/usr/bin/podman rm --all --force"
+        cmd: "podman rm --all --force"
       become: true
 
     - name: Create a directory if it does not exist
