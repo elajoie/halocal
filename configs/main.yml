@@ -1,36 +1,44 @@
 ---
-- hosts: 127.0.0.1
+- name: Setup Home Automation
+  hosts: 127.0.0.1
   vars_files: 
-    - vault
-    - vars.yml
+#    - vault
+#    - vars.yml
   tasks:
-    - name: Create a directory if it does not exist
-      ansible.builtin.file:
-        path: /root/.homeassistant
-        state: directory
-        mode: '0755'
-    - name: Create a directory if it does not exist
-      ansible.builtin.file:
-        path: /etc/mosquitto
-        state: directory
-        mode: '0755'
-    - name: Template for hass configs
-      ansible.builtin.template:
-        src: "{{ item }}.j2"
-        dest: "/root/.homeassistant/{{ item }}"
-      with_items:
-        - configuration.yaml
-        - automations.yaml
-        - binary_sensor.yaml
-        - customize.yaml
-        - groups.yaml
-        - scenes.yaml
-        - scripts.yaml
-        - sensor.yaml
-        - switch.yaml
-        - secrets.yaml
-    - name: Template for mosquitto configs
-      tansible.builtin.template:
-        src: mosquitto.conf.j2
-        dest: "/etc/mosquitto/mosquitto.conf"
+    - name: Download fedora image
+      containers.podman.podman_image:
+        name: registry.fedoraproject.org/fedora
+        tag: latest
+        path: ../hass/
+    
+      
+#    - name: Create a directory if it does not exist
+#      ansible.builtin.file:
+#        path: /root/.homeassistant
+#        state: directory
+#        mode: '0755'
+#    - name: Create a directory if it does not exist
+#      ansible.builtin.file:
+#        path: /etc/mosquitto
+#        state: directory
+#        mode: '0755'
+#    - name: Template for hass configs
+#      ansible.builtin.template:
+#        src: "{{ item }}.j2"
+#        dest: "/root/.homeassistant/{{ item }}"
+#      with_items:
+#        - configuration.yaml
+#        - automations.yaml
+#        - binary_sensor.yaml
+#        - customize.yaml
+#        - groups.yaml
+#        - scenes.yaml
+#        - scripts.yaml
+#        - sensor.yaml
+#        - switch.yaml
+#        - secrets.yaml
+#    - name: Template for mosquitto configs
+#      tansible.builtin.template:
+#        src: mosquitto.conf.j2
+#        dest: "/etc/mosquitto/mosquitto.conf"
 ...
