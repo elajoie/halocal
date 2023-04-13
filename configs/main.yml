@@ -19,6 +19,18 @@
 #        - "1883/udp"
 #      become: true
 
+    - name: Enable service httpd and ensure it is not masked
+      ansible.builtin.systemd:
+        name: dmosquitto.service
+        enabled: true
+      become: true
+
+    - name: Enable service httpd and ensure it is not masked
+      ansible.builtin.systemd:
+        name: homeassistant.service
+        enabled: true
+      become: true
+
     - name: Start and create systemd for both HA and Mosquitto
       ansible.builtin.shell:
         cmd: "/usr/bin/podman rm --all --force"
@@ -51,7 +63,7 @@
       become: true
 
     - name: Template for mosquitto configs
-      tansible.builtin.template:
+      ansible.builtin.template:
         src: mosquitto.conf.j2
         dest: "{{ homedir }}/.mosquitto/mosquitto.conf"
 
@@ -108,14 +120,14 @@
   handlers:
     - name: Restart ha service
       ansible.builtin.service:
-        name: automation-homeassistant.service
+        name: homeassistant.service
         state: started
       listen: "restart ha"
       become: true
 
     - name: Restart mosquitto service
       ansible.builtin.service:
-        name: automation-mosquitto.service
+        name: mosquitto.service
         state: reloaded
       listen: "restart mosquitto"
       become: true
