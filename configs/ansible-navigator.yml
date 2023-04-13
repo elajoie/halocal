@@ -1,0 +1,5 @@
+ansible-navigator:
+   ansible:
+     config:
+       help: False
+       path: ansible.cfg

@@ -1,17 +1,9 @@
-# Install Fedora 34
+# Install latest fedora
 
 ```
-firewall-cmd --permanent --zone=FedoraServer --add-port=8123/tcp 
+sudo dnf install -y git podman ansible python3-pip
 
-firewall-cmd --permanent --zone=FedoraServer --add-port=1883/tcp
-
-firewall-cmd --permanent --zone=FedoraServer --add-port=1883/udp
-
-firewall-cmd --reload
-
-dnf install -y git podman ansible
-
-dnf groupinstall 'Development Tools'
+sudo pip install ansible-navigator
 
 git clone https://github.com/elajoie/halocal.git
 
@@ -41,7 +33,7 @@ podman build --rm -t mosquitto -f mosquitto/Containerfile
 
 podman run -dt --rm -p 1883:1883 --name mosquitto -v /etc/mosquitto:/etc/mosquitto:Z localhost/mosquitto:latest
 
-podman run -dt --rm -p 8123:8123 --name homeassistant -v /root/.homeassistant:/root/.homeassistant:Z localhost/homeassistant:latest
+podman run -dt --rm -p 8123:8123 --name homeassistant -v /home/admin/.homeassistant:/root/.homeassistant:Z localhost/homeassistant:latest
 
 podman generate systemd --new --name mosquitto > /etc/systemd/system/mosquitto.service
 
