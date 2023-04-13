@@ -6,7 +6,7 @@
   vars_files: 
 #    - vault
     - vars.yml
-#  tasks:
+  tasks:
 #    - name: Firewall HA Rules
 #      ansible.posix.firewalld:
 #        port: "{{ item }}"
@@ -19,25 +19,23 @@
 #        - "1883/udp"
 #      become: true
 
-#    - name: Create a directory if it does not exist
-#      ansible.builtin.file:
-#        path: "{{ homedir }}/.homeassistant"
-#        state: directory
-#       mode: '0755'
+    - name: Create a directory if it does not exist
+      ansible.builtin.file:
+        path: "{{ homedir }}/.homeassistant"
+        state: directory
+        mode: '0755'
 
-#    - name: Create a directory if it does not exist
-#      ansible.builtin.file:
-#        path: "{{ homedir }}/.mosquitto"
-#        state: directory
-#        mode: '0755'
+    - name: Create a directory if it does not exist
+      ansible.builtin.file:
+        path: "{{ homedir }}/.mosquitto"
+        state: directory
+        mode: '0755'
 
     - name: Build HA image
       containers.podman.podman_image:
         name: localhost/homeassistant
         tag: latest
         path: "{{ homedir }}/halocal/hass"
-        build:
-          volume: "{{ homedir }}/.homeassistant:/root/.homeassistant:Z"
       become: true
 
 #    - name: Build MQTT image
@@ -56,7 +54,7 @@
         expose:
           - 8123
         volumes:
-          - "{{ homedir }}/.homeassistant:/root/.homeassistant"
+          - "{{ homedir }}/.homeassistant/:/root/.homeassistant/"
         generate_systemd:
           path: /etc/systemd/system/
           restart_policy: always
