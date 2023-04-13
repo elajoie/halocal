@@ -38,73 +38,27 @@
         path: "{{ homedir }}/halocal/hass"
       become: true
 
-#    - name: Build MQTT image
-#      containers.podman.podman_image:
-#        name: localhost/mosquitto
-#        tag: latest
-#        path: "{{ homedir }}/halocal/mosquitto"
-#      become: true
-
-    - name: Run HA container
-      containers.podman.podman_container:
-        name: ha
-        image: localhost/homeassistant
-        state: started
-        volume: "{{ homedir }}/.homeassistant/:/root/.homeassistant/:Z"
-
-    - name: Wait for 60 sec so ha can load dependancies
-      wait_for:
-        delay: 60
-        timeout: 0
-
-    - name: Run HA container
-      containers.podman.podman_container:
-        name: ha
-        image: localhost/homeassistant
-        state: started
-
-    - name: Stop HA container
-      containers.podman.podman_container:
-        name: ha
-        image: localhost/homeassistant
-        state: absent
-
-    - name: Start and create systemd service for Home Assistant
-      containers.podman.podman_container:
-        name: homeassistant
-        image: localhost/homeassistant
-        state: present
-        recreate: yes
-        expose:
-          - 8123
-        volume: "{{ homedir }}/.homeassistant/:/root/.homeassistant/:Z"
-        generate_systemd:
-          path: /etc/systemd/system/
-          restart_policy: always
-          time: 120
-          names: true
-          container_prefix: automation
+    - name: Build MQTT image
+      containers.podman.podman_image:
+        name: localhost/mosquitto
+        tag: latest
+        path: "{{ homedir }}/halocal/mosquitto"
       become: true
-      notify: "restart ha"
 
-#    - name: Start and create systemd service for Mosquitto
-#      containers.podman.podman_container:
-#        name: mosquitto
-#        image: localhost/mosquitto
-#        state: present
-#        recreate: yes
-#        expose:
-#          - 1883
-#        volume: "{{ homedir }}/.mosquitto:/etc/mosquitto"
-#        generate_systemd:
-#          path: /etc/systemd/system/
-#          restart_policy: always
-#          time: 120
-#          names: true
-#          container_prefix: automation
-#      become: true
-#      notify: "restart mosquitto"
-
+    - name: Starn and create systemd for both HA and Mosquitto
+      ansible.builtin.command:
+        cmd: "{{ item }}"
+      with_items:
+        - "/usr/bin/podman run -dt --rm -p 1883:1883 --name mosquitto -v /etc/mosquitto:/etc/mosquitto:Z localhost/mosquitto:latest"
+        - "/usr/bin/podman run -dt --rm -p 8123:8123 --name homeassistant -v /home/admin/.homeassistant:/root/.homeassistant:Z localhost/homeassistant:latest"
+        - "/usr/bin/podman generate systemd --new --name mosquitto > /etc/systemd/system/mosquitto.service"
+        - "/usr/bin/podman generate systemd --new --name homeassistant > /etc/systemd/system/homeassistant.service"
+        - "/usr/bin/systemctl enable --now mosquitto.service"
+        - "/usr/bin/systemctl enable --now homeassistant.service"
+      become: true
+      notify:
+        - "restart ha"
+        - "restart mosquitto"
 
 #    - name: Template for hass configs
 #      ansible.builtin.template:
@@ -127,24 +81,11 @@
 #        dest: "{{ homedir }}/.mosquitto/mosquitto.conf"
 
   handlers:
-    - name: Just force systemd to reread configs (2.4 and above)
-      ansible.builtin.systemd:
-        daemon_reload: true
-      listen: "restart ha"
-      become: true
-
     - name: Restart ha service
       ansible.builtin.service:
         name: automation-homeassistant.service
         state: started
       listen: "restart ha"
-      become: true
-
-    - name: Just force systemd to reread configs (2.4 and above)
-      ansible.builtin.systemd:
-        daemon_reload: true
-      listen: "restart ha"
-      listen: "restart mosquitto"
       become: true
 
     - name: Restart mosquitto service
