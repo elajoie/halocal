@@ -50,31 +50,37 @@
         path: "{{ homedir }}/halocal/mosquitto"
       become: true
 
+    - name: Template for mosquitto configs
+      tansible.builtin.template:
+        src: mosquitto.conf.j2
+        dest: "{{ homedir }}/.mosquitto/mosquitto.conf"
+
+
     - name: Start Mosquitto
-      ansible.builtin.shell: "/usr/bin/podman run -dt --rm -p 1883:1883 --name mosquitto -v {{ homedir }}/.mosquitto:/etc/mosquitto:Z localhost/mosquitto:latest"
+      ansible.builtin.shell: "podman run -dt --rm -p 1883:1883 --name mosquitto -v {{ homedir }}/.mosquitto:/etc/mosquitto:Z localhost/mosquitto:latest"
       become: true
 
     - name: Start HA
-      ansible.builtin.shell: "/usr/bin/podman run -dt --rm -p 8123:8123 --name homeassistant -v {{ homedir }}/.homeassistant:/root/.homeassistant:Z localhost/homeassistant:latest"
+      ansible.builtin.shell: "podman run -dt --rm -p 8123:8123 --name homeassistant -v {{ homedir }}/.homeassistant:/root/.homeassistant:Z localhost/homeassistant:latest"
       become: true
 
     - name: create systemd for Mosquitto
-      ansible.builtin.shell: /usr/bin/podman generate systemd --new --name mosquitto > /etc/systemd/system/mosquitto.service
+      ansible.builtin.shell: podman generate systemd --new --name mosquitto > /etc/systemd/system/mosquitto.service
       become: true
 
     - name: Screate systemd for both HA
-      ansible.builtin.shell: /usr/bin/podman generate systemd --new --name homeassistant > /etc/systemd/system/homeassistant.service
+      ansible.builtin.shell: podman generate systemd --new --name homeassistant > /etc/systemd/system/homeassistant.service
       become: true
 
     - name: Start systemd for Mosquitto
-      ansible.builtin.shell: /usr/bin/systemctl enable --now mosquitto.service
+      ansible.builtin.shell: systemctl enable --now mosquitto.service
       become: true
       notify:
         - "restart ha"
         - "restart mosquitto"
 
     - name: Start systemd for both HA
-      ansible.builtin.shell: /usr/bin/systemctl enable --now homeassistant.service
+      ansible.builtin.shell: systemctl enable --now homeassistant.service
       become: true
       notify:
         - "restart ha"
@@ -97,10 +103,7 @@
 #        - sensor.yaml
 #        - switch.yaml
 #        - secrets.yaml
-#    - name: Template for mosquitto configs
-#      tansible.builtin.template:
-#        src: mosquitto.conf.j2
-#        dest: "{{ homedir }}/.mosquitto/mosquitto.conf"
+
 
   handlers:
     - name: Restart ha service
