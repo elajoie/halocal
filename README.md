@@ -9,9 +9,9 @@ git clone https://github.com/elajoie/halocal.git
 
 cd halocal/configs
 
-update host IP in inventory as 127.0.0.1 is the EE and the IP you put in will be what the EE SSHes into.
+Change inventory IP to match your HA system IP or hostname
 
-add local file called pass with the password for sudo in it
+add local file called pass with the password for sudo into config folder
 
 ansible-navigator run -m stdout main.yml --become-pass-file pass
 

@@ -1,4 +1,4 @@
-FROM registry.fedoraproject.org/fedora:36
+FROM registry.fedoraproject.org/fedora:latest
 
 # Install some packages
 RUN dnf install -y python python3-pip python-devel gcc && dnf -y update && \
