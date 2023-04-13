@@ -1,6 +1,6 @@
 ---
 - name: Setup Home Automation
-  hosts: 127.0.0.1
+  hosts: ha
   remote_user: "{{ ansible_user }}"
   vars_files: 
 #    - vault

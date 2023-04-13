@@ -8,6 +8,10 @@ sudo pip install ansible-navigator
 git clone https://github.com/elajoie/halocal.git
 
 cd halocal/configs
+
+update host IP in inventory as 127.0.0.1 is the EE and the IP you put in will be what the EE SSHes into.
+
+
 ```
 
 make sure you create your own vault file simular to below and put it into the hass folder in your git repo:
