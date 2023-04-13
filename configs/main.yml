@@ -26,12 +26,17 @@
 #systemctl enable --now mosquitto.service
 #systemctl enable --now homeassistant.service
 
-#    - name: Build HA image
-#      containers.podman.podman_image:
-#        name: localhost/homeassistant
-#        tag: latest
-#        path: "{{ homedir }}/halocal/hass"
-    
+    - name: Build HA image
+      containers.podman.podman_image:
+        name: localhost/homeassistant
+        tag: latest
+        path: "{{ homedir }}/halocal/hass"
+      register: ha_results
+
+    - name: Print return information from the previous task
+      ansible.builtin.debug:
+        var: ha_results
+
 #    - name: Build MQTT image
 #      containers.podman.podman_image:
 #        name: localhost/mosquitto
