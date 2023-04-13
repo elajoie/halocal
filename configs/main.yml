@@ -1,9 +1,10 @@
 ---
 - name: Setup Home Automation
   hosts: 127.0.0.1
-#  vars_files: 
+  remote_user: "{ansible_user}"
+  vars_files: 
 #    - vault
-#    - vars.yml
+    - vars.yml
   tasks:
     - name: Firewall HA Rules
       ansible.posix.firewalld:

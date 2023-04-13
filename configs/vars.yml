@@ -1,5 +1,7 @@
 ---
 # vars file for haConfig
+ansible_user: admin
+
 device:
   - name: fishtanklight
   - name: fishtankpower
