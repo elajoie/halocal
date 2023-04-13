@@ -19,6 +19,11 @@
 #        - "1883/udp"
 #      become: true
 
+    - name: Start and create systemd for both HA and Mosquitto
+      ansible.builtin.command:
+        cmd: "/usr/bin/podman rm --all --force"
+      become: true
+
     - name: Create a directory if it does not exist
       ansible.builtin.file:
         path: "{{ homedir }}/.homeassistant"
@@ -49,12 +54,12 @@
       ansible.builtin.command:
         cmd: "{{ item }}"
       with_items:
-        - /usr/bin/podman run -dt --rm -p 1883:1883 --name mosquitto -v "{{ homedir }}/.mosquitto:/etc/mosquitto:Z" localhost/mosquitto:latest
-        - /usr/bin/podman run -dt --rm -p 8123:8123 --name homeassistant -v "{{ homedir }}/.homeassistant:/root/.homeassistant:Z" localhost/homeassistant:latest
-        - /usr/bin/podman generate systemd --new --name mosquitto > /etc/systemd/system/mosquitto.service
-        - /usr/bin/podman generate systemd --new --name homeassistant > /etc/systemd/system/homeassistant.service
-        - /usr/bin/systemctl enable --now mosquitto.service
-        - /usr/bin/systemctl enable --now homeassistant.service
+        - "/usr/bin/podman run -dt --rm -p 1883:1883 --name mosquitto -v {{ homedir }}/.mosquitto:/etc/mosquitto:Z localhost/mosquitto:latest"
+        - "/usr/bin/podman run -dt --rm -p 8123:8123 --name homeassistant -v {{ homedir }}/.homeassistant:/root/.homeassistant:Z localhost/homeassistant:latest"
+        - "/usr/bin/podman generate systemd --new --name mosquitto > /etc/systemd/system/mosquitto.service"
+        - "/usr/bin/podman generate systemd --new --name homeassistant > /etc/systemd/system/homeassistant.service"
+        - "/usr/bin/systemctl enable --now mosquitto.service"
+        - "/usr/bin/systemctl enable --now homeassistant.service"
       become: true
       notify:
         - "restart ha"
