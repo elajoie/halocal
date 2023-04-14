@@ -7,31 +7,31 @@
 #    - vault
     - vars.yml
   tasks:
-#    - name: Firewall HA Rules
-#      ansible.posix.firewalld:
-#        port: "{{ item }}"
-#        permanent: true
-#        state: enabled
-#        immediate: yes
-#      with_items:
-#        - "8123/tcp"
-#        - "1883/tcp"
-#        - "1883/udp"
-#      become: true
-
-    - name: Enable service httpd and ensure it is not masked
-      ansible.builtin.systemd:
-        name: mosquitto.service
-        enabled: false
+    - name: Firewall HA Rules
+      ansible.posix.firewalld:
+        port: "{{ item }}"
+        permanent: true
+        state: enabled
+        immediate: yes
+      with_items:
+        - "8123/tcp"
+        - "1883/tcp"
+        - "1883/udp"
       become: true
 
-    - name: Enable service httpd and ensure it is not masked
-      ansible.builtin.systemd:
-        name: homeassistant.service
-        enabled: false
+    - name: Start and create systemd for both HA and Mosquitto
+      ansible.builtin.shell:
+        cmd: "rm -f /etc/systemd/system/homeassistant.service"
       become: true
+      ignore_errors: true
 
-   - name: Start and create systemd for both HA and Mosquitto
+    - name: Start and create systemd for both HA and Mosquitto
+      ansible.builtin.shell:
+        cmd: "rm -f /etc/systemd/system/mosquitto.service"
+      become: true
+      ignore_errors: true
+
+    - name: Start and create systemd for both HA and Mosquitto
       ansible.builtin.shell:
         cmd: "systemctl daemon-reload"
       become: true
@@ -71,7 +71,6 @@
       ansible.builtin.template:
         src: mosquitto.conf.j2
         dest: "{{ homedir }}/.mosquitto/mosquitto.conf"
-
 
     - name: Start Mosquitto
       ansible.builtin.shell: "podman run -dt --rm -p 1883:1883 --name mosquitto -v {{ homedir }}/.mosquitto:/etc/mosquitto:Z localhost/mosquitto:latest"
@@ -126,14 +125,14 @@
     - name: Restart ha service
       ansible.builtin.service:
         name: homeassistant.service
-        state: started
+        state: restarted
       listen: "restart ha"
       become: true
 
     - name: Restart mosquitto service
       ansible.builtin.service:
         name: mosquitto.service
-        state: reloaded
+        state: restarted
       listen: "restart mosquitto"
       become: true
 ...
