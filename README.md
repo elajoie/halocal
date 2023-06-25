@@ -27,7 +27,7 @@ ansible-nav*
 ```
 
 make sure you create your own vault file simular to below and put it into the hass folder in your git repo:
-```yaml
+```
 elevation: 123
 latitude: 40.111111
 longitude: 20.111111
