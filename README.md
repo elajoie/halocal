@@ -16,7 +16,8 @@ add local file called rootpass with the password for sudo into config folder
 add a local file called vaultpass with your vault password into the config folder
 
 You will likely have a .gitignore file which looks like below:
-```
+
+`
 vaultpass*
 rootpass*
 main-artifact*
@@ -24,9 +25,11 @@ vault-artifact*
 .gitignore
 ansible-nav*
 .vscode/
-```
+`
 
-make sure you create your own vault file simular to below and put it into the hass folder in your git repo:
+make sure you create your own vault file simular to below and put it into the hass folder
+in your git repo:
+
 ```
 elevation: 123
 latitude: 40.111111
@@ -42,7 +45,8 @@ Now run this command from within the config folder:
 ansible-navigator run --mode stdout --become-password-file=rootpass --vault-password-file=vaultpass main.yml
 ```
 
-Again, looking for feedback from your own experiance and ways to make this easier to have an offline HA which you as the user control the OS and image used to run HA.
+Again, looking for feedback from your own experiance and ways to make this easier to have
+an offline HA which you as the user control the OS and image used to run HA.
 
 Enjoy,
 Eric
