@@ -17,7 +17,7 @@ add a local file called vaultpass with your vault password into the config folde
 
 You will likely have a .gitignore file which looks like below:
 
-```yml
+```ini
 vaultpass*
 rootpass*
 main-artifact*
