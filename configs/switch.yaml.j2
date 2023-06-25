@@ -1,6 +1,5 @@
 {% for m in device %}
-  - platform: mqtt
-    name: "{{ m.name }}"
+  - name: "{{ m.name }}"
     command_topic: "cmnd/{{ m.name }}/power"
     state_topic: "stat/{{ m.name }}/POWER"
     payload_on: "ON"
@@ -17,8 +16,7 @@
 
 {% endfor %}
 {% for m in multiswitchdevice %}
-  - platform: mqtt
-    name: "{{ m.name }}"
+  - name: "{{ m.name }}"
     command_topic: "cmnd/{{ m.name }}/power1"
     state_topic: "stat/{{ m.name }}/POWER1"
     payload_on: "ON"

@@ -1,0 +1,35 @@
+  - platform: template
+    sensors:
+      power_heating_total:
+        value_template: "{{ '{{' }} states('sensor.meterr_power_total')|int - states('sensor.meterl_power_total')|int {{ '}}' }}"
+
+  - platform: template
+    sensors:
+      energy_heating_total:
+        value_template: "{{ '{{' }} states('sensor.meterr_energy_total') | int - states('sensor.meterl_energy_total') | int {{ '}}' }}"
+
+  - platform: template
+    sensors:
+      energy_heating_total_solar:
+        value_template: "{{ '{{' }} states('sensor.meter1_energy_export') | int - states('sensor.meterr_energy_export') | int {{ '}}' }}"
+
+  - platform: ics
+    name: Bio
+    url: file:///root/.homeassistant/allestrassendietmannsried.ics
+    id: 1
+    contains: "Biotonne"
+    icon: "mdi:bio"
+
+  - platform: ics
+    name: Paper
+    url: file:///root/.homeassistant/allestrassendietmannsried.ics
+    id: 2
+    contains: "Papiertonne"
+    icon: "mdi:recycle"
+
+  - platform: ics
+    name: Trash
+    url: file:///root/.homeassistant/allestrassendietmannsried.ics
+    id: 3
+    contains: "Restm"
+    icon: "mdi:trash-can"

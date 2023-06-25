@@ -79,6 +79,7 @@
         path: "{{ homedir }}/.homeassistant"
         state: directory
         mode: '0755'
+      become: true
       tags:
         - systemd
 
@@ -87,27 +88,28 @@
         path: "{{ homedir }}/.mosquitto"
         state: directory
         mode: '0755'
+      become: true
 
     - name: Template for hass configs
       ansible.builtin.template:
         src: "{{ item }}.j2"
         dest: "{{ homedir }}/.homeassistant/{{ item }}"
-        mode: "0755"
+        owner:   root
+        group:   root
+        seuser: "system_u"
+        setype: "container_file_t"
+        mode:   "0600"
+      become: true
       with_items:
         - configuration.yaml
-      #  - automations.yaml
-      #  - binary_sensor.yaml
-      #  - customize.yaml
-      #  - groups.yaml
-      #  - scenes.yaml
-      #  - scripts.yaml
-      #  - sensor.yaml
-      #  - switch.yaml
+        - binary_sensor.yaml
+        - sensor.yaml
+        - switch.yaml
         - secrets.yaml
       tags:
         - systemd
         - config
-      
+
     - name: Template for mosquitto configs
       ansible.builtin.template:
         src: mosquitto.conf.j2
