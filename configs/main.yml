@@ -1,6 +1,6 @@
 ---
 - name: Setup Home Automation
-  hosts: ha
+  hosts: all
   gather_facts: false
   remote_user: "{{ ansible_user }}"
   vars_files:
