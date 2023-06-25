@@ -17,7 +17,7 @@ add a local file called vaultpass with your vault password into the config folde
 
 You will likely have a .gitignore file which looks like below:
 
-`
+```yml
 vaultpass*
 rootpass*
 main-artifact*
@@ -25,12 +25,12 @@ vault-artifact*
 .gitignore
 ansible-nav*
 .vscode/
-`
+```
 
 make sure you create your own vault file simular to below and put it into the hass folder
 in your git repo:
 
-```
+```ini
 elevation: 123
 latitude: 40.111111
 longitude: 20.111111
@@ -41,7 +41,7 @@ stream_url: rtsp://xyz
 
 
 Now run this command from within the config folder:
-```
+```cli
 ansible-navigator run --mode stdout --become-password-file=rootpass --vault-password-file=vaultpass main.yml
 ```
 
