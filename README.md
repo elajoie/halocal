@@ -1,6 +1,4 @@
 # Install latest fedora
-
-```
 sudo dnf install -y git podman ansible python3-pip
 
 sudo pip install ansible-navigator
