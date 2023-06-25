@@ -11,12 +11,19 @@ cd halocal/configs
 
 Change inventory IP to match your HA system IP or hostname
 
-add local file called pass with the password for sudo into config folder
+add local file called rootpass with the password for sudo into config folder
 
-ansible-navigator run -m stdout main.yml --become-pass-file pass
+add a local file called vaultpass with your vault password into the config folder
 
-
-
+You will likely have a .gitignore file which looks like below:
+```
+vaultpass*
+rootpass*
+main-artifact*
+vault-artifact*
+.gitignore
+ansible-nav*
+.vscode/
 ```
 
 make sure you create your own vault file simular to below and put it into the hass folder in your git repo:
@@ -29,28 +36,10 @@ stream_img: https://1.1.1.1/snap.jpeg
 stream_url: rtsp://xyz
 ```
 
+
+Now run this command from within the config folder:
 ```
-
-```
-
-# Build images
-
-```
-podman build --rm -t homeassistant -f hass/Containerfile
-
-podman build --rm -t mosquitto -f mosquitto/Containerfile
-
-podman run -dt --rm -p 1883:1883 --name mosquitto -v /etc/mosquitto:/etc/mosquitto:Z localhost/mosquitto:latest
-
-podman run -dt --rm -p 8123:8123 --name homeassistant -v /home/admin/.homeassistant:/root/.homeassistant:Z localhost/homeassistant:latest
-
-podman generate systemd --new --name mosquitto > /etc/systemd/system/mosquitto.service
-
-podman generate systemd --new --name homeassistant > /etc/systemd/system/homeassistant.service
-
-systemctl enable --now mosquitto.service
-
-systemctl enable --now homeassistant.service
+ansible-navigator run --mode stdout --become-password-file=rootpass --vault-password-file=vaultpass main.yml
 ```
 
 Again, looking for feedback from your own experiance and ways to make this easier to have an offline HA which you as the user control the OS and image used to run HA.

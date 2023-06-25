@@ -3,8 +3,8 @@
   hosts: ha
   gather_facts: false
   remote_user: "{{ ansible_user }}"
-  vars_files: 
-#    - vault
+  vars_files:
+    - vault
     - vars.yml
   tasks:
     - name: Firewall HA Rules
@@ -12,33 +12,66 @@
         port: "{{ item }}"
         permanent: true
         state: enabled
-        immediate: yes
+        immediate: true
       with_items:
         - "8123/tcp"
         - "1883/tcp"
         - "1883/udp"
       become: true
 
-    - name: Start and create systemd for both HA and Mosquitto
-      ansible.builtin.shell:
-        cmd: "rm -f /etc/systemd/system/homeassistant.service"
+    - name: Stop & Disable both Mosquito and HA services
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        state: stopped
+        enabled: false
+      with_items:
+        - pod-homeassistant.service
+        - pod-mosquitto.service
       become: true
+      tags:
+        - systemd
+        - pods
       ignore_errors: true
 
-    - name: Start and create systemd for both HA and Mosquitto
-      ansible.builtin.shell:
-        cmd: "rm -f /etc/systemd/system/mosquitto.service"
+    - name: Remove podman pods for HA and Mosquitto
+      containers.podman.podman_container:
+        name: "{{ item }}"
+        state: absent
       become: true
-      ignore_errors: true
+      loop:
+        - homeassistant
+        - mosquitto
+      tags:
+        - systemd
+        - pods
 
-    - name: Start and create systemd for both HA and Mosquitto
-      ansible.builtin.shell:
-        cmd: "systemctl daemon-reload"
+    - name: Remove old hass systemctl file
+      ansible.builtin.file:
+        path: /etc/systemd/system/pod-homeassistant.service
+        state: absent
+      become: true
+      tags:
+        - systemd
+        - removesys
+
+    - name: Remove old mosquiti systemctl file
+      ansible.builtin.file:
+        path: /etc/systemd/system/pod-mosquitto.service
+        state: absent
       become: true
 
-    - name: Start and create systemd for both HA and Mosquitto
-      ansible.builtin.shell:
-        cmd: "podman rm --all --force"
+    - name: Reload systemctl daemon
+      ansible.builtin.systemd:
+        daemon_reload: true
+      become: true
+
+    - name: Remove HA and Mosquitto images
+      containers.podman.podman_image:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - localhost/homeassistant
+        - localhost/mosquitto
       become: true
 
     - name: Create a directory if it does not exist
@@ -46,6 +79,8 @@
         path: "{{ homedir }}/.homeassistant"
         state: directory
         mode: '0755'
+      tags:
+        - systemd
 
     - name: Create a directory if it does not exist
       ansible.builtin.file:
@@ -53,85 +88,168 @@
         state: directory
         mode: '0755'
 
+    - name: Template for hass configs
+      ansible.builtin.template:
+        src: "{{ item }}.j2"
+        dest: "{{ homedir }}/.homeassistant/{{ item }}"
+        mode: "0755"
+      with_items:
+        - configuration.yaml
+      #  - automations.yaml
+      #  - binary_sensor.yaml
+      #  - customize.yaml
+      #  - groups.yaml
+      #  - scenes.yaml
+      #  - scripts.yaml
+      #  - sensor.yaml
+      #  - switch.yaml
+        - secrets.yaml
+      tags:
+        - systemd
+        - config
+      
+    - name: Template for mosquitto configs
+      ansible.builtin.template:
+        src: mosquitto.conf.j2
+        dest: "{{ homedir }}/.mosquitto/mosquitto.conf"
+        mode: "0777"
+
+    - name: Copy containerfile to hosts
+      ansible.builtin.copy:
+        src: hass/Containerfile
+        dest: "{{ homedir }}/.homeassistant/Containerfile"
+        mode: '0644'
+
+    - name: Copy mosquitto containerfile to host
+      ansible.builtin.copy:
+        src: mosquitto/Containerfile
+        dest: "{{ homedir }}/.mosquitto/Containerfile"
+        mode: '0644'
+
     - name: Build HA image
       containers.podman.podman_image:
         name: localhost/homeassistant
-        tag: latest
-        path: "{{ homedir }}/halocal/hass"
+        build:
+          file: "{{ homedir }}/.homeassistant/Containerfile"
+        path: .
+        pull: false
+        push: false
+        state: build
+        force: true
       become: true
 
     - name: Build MQTT image
       containers.podman.podman_image:
         name: localhost/mosquitto
-        tag: latest
-        path: "{{ homedir }}/halocal/mosquitto"
+        build:
+          file: "{{ homedir }}/.mosquitto/Containerfile"
+        path: .
+        pull: false
+        push: false
+        state: build
+        force: true
       become: true
 
-    - name: Template for mosquitto configs
-      ansible.builtin.template:
-        src: mosquitto.conf.j2
-        dest: "{{ homedir }}/.mosquitto/mosquitto.conf"
-
-    - name: Start Mosquitto
-      ansible.builtin.shell: "podman run -dt --rm -p 1883:1883 --name mosquitto -v {{ homedir }}/.mosquitto:/etc/mosquitto:Z localhost/mosquitto:latest"
+    - name: Create a HA container with systemd service file generated in /etc/systemd/system/
+      containers.podman.podman_container:
+        name: homeassistant
+        image: localhost/homeassistant
+        state: present
+        recreate: yes
+        publish:
+          - 8123:8123
+        volumes:
+          - "{{ homedir }}/.homeassistant:/root/.homeassistant:Z"
+        generate_systemd:
+          path: /etc/systemd/system/
+          restart_policy: always
+          time: 120
+          names: true
+          container_prefix: pod
       become: true
-
-    - name: Start HA
-      ansible.builtin.shell: "podman run -dt --rm -p 8123:8123 --name homeassistant -v {{ homedir }}/.homeassistant:/root/.homeassistant:Z localhost/homeassistant:latest"
-      become: true
-
-    - name: create systemd for Mosquitto
-      ansible.builtin.shell: podman generate systemd --new --name mosquitto > /etc/systemd/system/mosquitto.service
-      become: true
-
-    - name: Screate systemd for both HA
-      ansible.builtin.shell: podman generate systemd --new --name homeassistant > /etc/systemd/system/homeassistant.service
-      become: true
-
-    - name: Start systemd for Mosquitto
-      ansible.builtin.shell: systemctl enable --now mosquitto.service
-      become: true
+      tags:
+        - systemd
       notify:
-        - "restart ha"
-        - "restart mosquitto"
+        - restart ha
 
-    - name: Start systemd for both HA
-      ansible.builtin.shell: systemctl enable --now homeassistant.service
+    - name: Create a mosquitto container with systemd service file generated in /etc/systemd/system/
+      containers.podman.podman_container:
+        name: mosquitto
+        image: localhost/mosquitto
+        state: present
+        recreate: yes
+        publish:
+          - 1883:1883
+        volumes:
+          - "{{ homedir }}/.mosquitto:/etc/mosquitto:Z"
+        generate_systemd:
+          path: /etc/systemd/system/
+          restart_policy: always
+          time: 120
+          names: true
+          container_prefix: pod
       become: true
+      tags:
+        - systemd
       notify:
-        - "restart ha"
-        - "restart mosquitto"
+        - restart mosquitto
 
+    - name: Start HA services so .homeassistant folder is populated
+      ansible.builtin.systemd:
+        name: pod-homeassistant.service
+        state: reloaded
+      become: true
+      tags:
+        - systemd
+      ignore_errors: true
 
+    - name: Reload systemctl daemon
+      ansible.builtin.systemd:
+        daemon_reload: true
+      become: true
+      tags:
+        - systemd
 
-#    - name: Template for hass configs
-#      ansible.builtin.template:
-#        src: "{{ item }}.j2"
-#        dest: "{{ homedir }}/.homeassistant/{{ item }}"
-#      with_items:
-#        - configuration.yaml
-#        - automations.yaml
-#        - binary_sensor.yaml
-#        - customize.yaml
-#        - groups.yaml
-#        - scenes.yaml
-#        - scripts.yaml
-#        - sensor.yaml
-#        - switch.yaml
-#        - secrets.yaml
+    - name: Start mosquitto services
+      ansible.builtin.systemd:
+        name: pod-homeassistant.service
+        state: started
+      become: true
+      tags:
+        - systemd
 
+    - name: Pause for 30s - These next three plays are needed to populate the config folder during new install
+      ansible.builtin.pause:
+        seconds: 30
+      tags:
+        - systemd
+
+    - name: Restart HA services so .homeassistant folder is populated
+      ansible.builtin.systemd:
+        name: pod-homeassistant.service
+        state: restarted
+        enabled: true
+      become: true
+      tags:
+        - systemd
+
+    - name: Pause for 120s
+      ansible.builtin.pause:
+        seconds: 120
+      tags:
+        - systemd
 
   handlers:
     - name: Restart ha service
       ansible.builtin.service:
-        name: homeassistant.service
+        name: pod-homeassistant.service
         state: restarted
       listen: "restart ha"
       become: true
 
     - name: Restart mosquitto service
       ansible.builtin.service:
-        name: mosquitto.service
+        name: pod-mosquitto.service
         state: restarted
       listen: "restart mosquitto"
       become: true
