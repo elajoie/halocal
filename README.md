@@ -9,7 +9,7 @@ cd halocal/configs
 
 Change inventory IP to match your HA system IP or hostname
 
-add local file called rootpass with the password for sudo into config folder
+add a local file called rootpass with the password for sudo into config folder
 
 add a local file called vaultpass with your vault password into the config folder
 
@@ -36,7 +36,7 @@ mqttpassword: 123
 stream_img: https://1.1.1.1/snap.jpeg
 stream_url: rtsp://xyz
 ```
-
+Edit the vars.yml to have your desired user and home directory plus list of devices you have. You will need to edit the Jinja templates to align to your device types.
 
 Now run this command from within the config folder:
 ```cli
